@@ -17,7 +17,7 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE_DIR)
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
-sys.path.insert(0, os.path.join(BASE_DIR,'extra_apps'))
+sys.path.insert(0, os.path.join(BASE_DIR, 'extra_apps'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'crispy_forms',
     'ckeditor',  # 富文本编辑器
     'ckeditor_uploader',  # 富文本编辑器上传图片模块
-
 
 ]
 AUTH_USER_MODEL = 'users.User'
@@ -164,6 +163,9 @@ CKEDITOR_IMAGE_BACKEND = "pillow"
 EMAIL_HOST = 'smtp.126.com'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = 'haijun0427@126.com'
-EMAIL_HOST_PASSWORD = 'xy0407'
+'''
+新注册邮箱会报错 smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed'),可以用授权码代替密码
+'''
+EMAIL_HOST_PASSWORD = 'xy0407a'
 EMAIL_USE_TLS = True
 EMAIL_FROM = 'haijun0427@126.com'

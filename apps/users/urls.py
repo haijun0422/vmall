@@ -6,11 +6,12 @@
 # @Software: PyCharm
 
 from django.conf.urls import url
-from users.views import RegisterView, LoginView
+from users.views import RegisterView, LoginView, ActiveEmail
 
 
 urlpatterns = [
-    url(r'register', RegisterView.as_view(), name='register'),
-    url(r'login', LoginView.as_view(), name='login'),
+    url(r'^register', RegisterView.as_view(), name='register'),
+    url(r'^login', LoginView.as_view(), name='login'),
+    url(r'^active/(?P<token>.*)$', ActiveEmail.as_view(), name='active')
 
 ]

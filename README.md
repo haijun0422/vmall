@@ -27,3 +27,27 @@ CKEDITOR_UPLOAD_PATH = ''  # 上传图片保存路径，使用了FastDFS，所�
 ```python
 url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 ```
+
+
+### celery 异步发邮件
+
+- pip install celery
+- 配置settings
+    ```python
+        '''发送邮件配置'''
+        EMAIL_HOST = 'smtp.126.com'
+        EMAIL_PORT = 25
+        EMAIL_HOST_USER = 'haijun0427@126.com'
+        EMAIL_HOST_PASSWORD = 'xy0407'
+        EMAIL_USE_TLS = True
+        EMAIL_FROM = 'haijun0427@126.com'
+    ```
+
+- 启动 
+    ```python
+    celery -A celery_task.tasks worker -l info
+    ```
+- 发送邮件报错
+    ```python
+    新注册邮箱会报错 smtplib.SMTPAuthenticationError: (535, b'Error: authentication failed'),可以用授权码代替密码
+    ``` 
