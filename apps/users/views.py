@@ -7,7 +7,6 @@ from django.db.models import Q
 from django.conf import settings
 from django.http import HttpResponse
 
-
 from .models import User
 from django.views.generic import View
 from .forms import RegisterForm, LoginForm
@@ -18,6 +17,7 @@ from celery_task.tasks import send_mail_active
 
 class CustomBackend(ModelBackend):
     '''定义用户名，邮箱和手机号都可以登录，setting里需要配置'''
+
     def authenticate(self, username=None, password=None, **kwargs):
         try:
             user = User.objects.get(Q(username=username) | Q(email=username) | Q(mobile=username))
@@ -33,6 +33,7 @@ class RegisterView(View):
     /user/register
     所有验证放入了form表单
     '''
+
     def get(self, request):
         return render(request, 'regist.html')
 
@@ -43,7 +44,8 @@ class RegisterView(View):
             password = form.cleaned_data['password1']
             email = form.cleaned_data['email']
             mobile = form.cleaned_data['mobile']
-            user = User.objects.create_user(username=username, password=password, email=email, mobile=mobile) # 如果是位置参数注意顺序和数量
+            user = User.objects.create_user(username=username, password=password, email=email,
+                                            mobile=mobile)  # 如果是位置参数注意顺序和数量
             user.is_active = 0
             user.save()
 
@@ -62,8 +64,11 @@ class RegisterView(View):
         else:
             error = form.errors
         return render(request, 'regist.html', {'form': form, 'error': error})
+
+
 class ActiveEmail(View):
     '''用户激活'''
+
     def get(self, request, token):
         '''进行解密,获取进行激活的用户信息'''
         serializer = Serializer(settings.SECRET_KEY, 3600)
@@ -80,25 +85,42 @@ class ActiveEmail(View):
             return HttpResponse('激活链接已经过期')
 
 
-
 class LoginView(View):
     '''
     登录
     /user/login
     所有输入验证放入了form表单
     '''
+
     def get(self, request):
-        return render(request, 'login.html')
+        '''判断是否记住了用户名'''
+        if 'username' in request.COOKIES:
+            username = request.COOKIES.get('username')
+            print(username)
+            checked = 'checked'
+        else:
+            username = ''
+            checked = ''
+
+        return render(request, 'login.html', {'username': username, 'checked': checked})
 
     def post(self, request):
         form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            user = authenticate(username=username, password=password) # 验证用户名和密码
+            user = authenticate(username=username, password=password)  # 登录校验
             if user is not None and user.is_active:
-                login(request, user)  # 登录
-                return redirect(reverse('good:index'))
+                login(request, user)  # 登录并记住状态
+                response = redirect(reverse('good:index'))  # HttpResponseRedirect
+                remember = request.POST.get('remember')
+                if remember == 'on':  # 如果checkbox 的属性为on就表示勾选
+                    response.set_cookie('username', username, max_age=7 * 24 * 3600)
+                else:
+                    response.delete_cookie('username')
+                return response
+
+
             else:
                 return render(request, 'login.html', {'form': form, 'msg': '用户名或密码错误'})
         else:

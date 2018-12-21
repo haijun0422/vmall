@@ -90,7 +90,7 @@ class RegisterForm(forms.Form):
 class LoginForm(forms.Form):
     username = forms.CharField(label='用户名')
     password = forms.CharField(label='密码', widget=forms.PasswordInput)
-
+    '''判断登录方式'''
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if check_email(username):

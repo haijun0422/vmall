@@ -27,6 +27,14 @@ CKEDITOR_UPLOAD_PATH = ''  # 上传图片保存路径，使用了FastDFS，所�
 ```python
 url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 ```
+### redis 数据库分配
+- 连接redis redis-cli -h 127.0.0.1(如果是默认端口号就不用写)
+    - 数据库选择 select 0
+    - 查看数据库 keys *
+    
+- 0号 caches
+- 1号 session
+- 2号 celery
 
 
 ### celery 异步发邮件
@@ -53,3 +61,4 @@ url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     ``` 
     
 ### FastDFS
+
