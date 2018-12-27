@@ -1,7 +1,7 @@
 # encoding:utf-8
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from django.conf import settings
@@ -125,3 +125,11 @@ class LoginView(View):
                 return render(request, 'login.html', {'form': form, 'msg': '用户名或密码错误'})
         else:
             return render(request, 'login.html', {'form': form})
+
+
+class LogoutView(View):
+    '''登出'''
+
+    def get(self, request):
+        logout(request)  # 清楚用户的session信息
+        return redirect(reverse('good:index'))

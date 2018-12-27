@@ -110,7 +110,7 @@
         <!--End 所在收货地区 End-->
         <span class="fr">
             {% if user.is_authenticated %}
-                <span class="fl">欢迎您:{{ user.username }}&nbsp; <a href="{% url 'good:index' %}" style="color:#ff4e00;">退出</a>&nbsp;|&nbsp;<a
+                <span class="fl">欢迎您:{{ user.username }}&nbsp; <a href="{% url 'user:logout' %}" style="color:#ff4e00;">退出</a>&nbsp;|&nbsp;<a
                         href="#">我的订单</a>&nbsp;|</span>
             {% else %}
                 <span class="fl">你好，请<a href="{% url 'user:login' %}">登录</a>&nbsp; <a href="{% url 'user:register' %}"
