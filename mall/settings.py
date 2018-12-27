@@ -169,3 +169,6 @@ EMAIL_HOST_USER = 'haijun0427@126.com'
 EMAIL_HOST_PASSWORD = 'xy0407a'
 EMAIL_USE_TLS = True
 EMAIL_FROM = 'haijun0427@126.com'
+
+# 设置Django的自定义文件存储类
+DEFAULT_FILE_STORAGE='utils.fastdfs.storage.FDFSStorage'
