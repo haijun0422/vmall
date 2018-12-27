@@ -6,8 +6,9 @@
 # @Software: PyCharm
 
 from django.core.files.storage import Storage
+from django.conf import settings
+
 from fdfs_client.client import Fdfs_client
-import os
 
 
 class FDFSStorage(Storage):
@@ -17,6 +18,16 @@ class FDFSStorage(Storage):
     还需要重写 exsits()和url() 方法
     '''
 
+    def __init__(self, client_conf=None, base_url=None):
+        '''初始化'''
+        if client_conf is None:
+            client_conf = settings.FDFS_CLIENT_CONF
+        self.client_conf = client_conf
+
+        if base_url is None:
+            base_url = settings.FDFS_BASE_URL
+        self.base_url = base_url
+
     def _open(self, name, mode='rb'):
         '''打开文件时使用'''
         pass
@@ -24,7 +35,7 @@ class FDFSStorage(Storage):
     def _save(self, name, content):
         '''保存文件时使用，这是fdfs文件存储的关键'''
         # 创建Fsfs_client类,参数是client.conf文件的路径
-        client = Fdfs_client('./utils/fastdfs/client.conf')
+        client = Fdfs_client(self.client_conf)
         # 上传文件到fastdfs系统中
         res = client.upload_by_buffer(content.read())
         print(res)
@@ -45,8 +56,8 @@ class FDFSStorage(Storage):
             raise Exception('文件上传失败')
         # 获取返回文件的ID
         filename = res.get('Remote file_id')
-        print(filename)
-        print(os.path.dirname(filename))
+        # print(filename)
+        # print(os.path.dirname(filename))
 
         return filename
 
@@ -61,6 +72,5 @@ class FDFSStorage(Storage):
         返回URL，通过它可以访问到name所引用的文件
         nginx地址+文件名 <img http://192.168.211.130:8888/name />
         '''
-        print('http://192.168.211.130:8888/'+name)
-        return 'http://192.168.211.130:8888/'+name
-
+        # return 'http://192.168.211.130:8888/'+name
+        return self.base_url + name

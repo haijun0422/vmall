@@ -172,3 +172,9 @@ EMAIL_FROM = 'haijun0427@126.com'
 
 # 设置Django的自定义文件存储类
 DEFAULT_FILE_STORAGE='utils.fastdfs.storage.FDFSStorage'
+
+
+# 自定义fdfs使用的client.conf文件路径
+FDFS_CLIENT_CONF = './utils/fastdfs/client.conf'
+# 自定义fastdfs储存服务器上的nginx地址和IP端口
+FDFS_BASE_URL = 'http://192.168.211.130:8888/'

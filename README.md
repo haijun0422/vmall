@@ -1,3 +1,4 @@
+##python3+django+mysql+xadmin
 
 ### 富文本编辑器
 - pip install django-ckeditor
@@ -24,3 +25,5 @@
     如果返回类似group1/M00/00/00/rBIK6VcaP0aARXXvAAHrUgHEviQ394.jpg的文件id则说明文件上传成功
 
 - 安装nginx及fastdfs-nginx-module
+- nginx.conf 配置
+
