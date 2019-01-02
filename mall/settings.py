@@ -171,8 +171,10 @@ EMAIL_USE_TLS = True
 EMAIL_FROM = 'haijun0427@126.com'
 
 # 设置Django的自定义文件存储类
-DEFAULT_FILE_STORAGE='utils.fastdfs.storage.FDFSStorage'
+DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.FDFSStorage'
 
+# 配置登录url地址
+LOGIN_URL = '/user/login'  # /accounts/login?next=/user
 
 # 自定义fdfs使用的client.conf文件路径
 FDFS_CLIENT_CONF = './utils/fastdfs/client.conf'

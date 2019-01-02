@@ -2129,7 +2129,7 @@ table.add_tab tr td{
 	width:176px; height:23px; line-height:23px\9; overflow:hidden; background-color:#f6f6f6; color:#555555; font-size:12px; font-family:"宋体"; padding:0 10px; border:1px solid #d9d9d9;
 }
 
-a.add_b{
+.add_b{
 	width:90px; height:25px; line-height:25px; overflow:hidden; background-color:#ff4e00; color:#FFF; font-size:12px; font-family:"宋体"; text-align:center; margin-left:10px; border:0; cursor:pointer; float:right; margin-right:20px;
 }
 
@@ -2407,6 +2407,8 @@ ul.pay li.checked .ch_img{
 .btm img{
 	display:inline-block; margin:15px 5px 5px 5px; border:1px solid #d9d9d9; -webkit-border-radius:5px; -moz-border-radius:5px; border-radius:5px;
 }
-
+.area{
+	height: 23px;line-height: 23px;padding:0 25px 0 5px;border: 1px solid #eaeaea;border-collapse: collapse;position:relative;z-index:2;font-size:12px;font-family: '宋体';
+}
 
 

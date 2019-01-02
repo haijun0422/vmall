@@ -110,22 +110,22 @@
         <!--End 所在收货地区 End-->
         <span class="fr">
             {% if user.is_authenticated %}
-                <span class="fl">欢迎您:{{ user.username }}&nbsp; <a href="{% url 'user:logout' %}" style="color:#ff4e00;">退出</a>&nbsp;|&nbsp;<a
-                        href="#">我的订单</a>&nbsp;|</span>
+                <span class="fl">欢迎您:<a href="{% url 'user:member' %}" style="color:#ff4e00;">{{ user.username }}</a>&nbsp; <a href="{% url 'user:logout' %}" style="color:#ff4e00;">退出</a>&nbsp;|&nbsp;<a
+                        href="{% url 'user:order' %}">我的订单</a>&nbsp;|</span>
             {% else %}
                 <span class="fl">你好，请<a href="{% url 'user:login' %}">登录</a>&nbsp; <a href="{% url 'user:register' %}"
                                                                                       style="color:#ff4e00;">免费注册</a>&nbsp;|&nbsp;<a
-                        href="#">我的订单</a>&nbsp;|</span>
+                        href="{% url 'user:order' %}">我的订单</a>&nbsp;|</span>
             {% endif %}
             <span class="ss">
             	<div class="ss_list">
-                	<a href="#">收藏夹</a>
+                	<a href="{% url 'user:collect' %}">收藏夹</a>
                     <div class="ss_list_bg">
                     	<div class="s_city_t"></div>
                         <div class="ss_list_c">
                         	<ul>
-                            	<li><a href="#">我的收藏夹</a></li>
-                                <li><a href="#">我的收藏夹</a></li>
+                            	<li><a href="{% url 'user:collect' %}">我的收藏夹</a></li>
+{#                                <li><a href="#">我的收藏夹</a></li>#}
                             </ul>
                         </div>
                     </div>

@@ -5,16 +5,13 @@
 # @File    : adminx.py
 # @Software: PyCharm
 
-from .models import Province, City
+from .models import Area
 import xadmin
 
 
-class ProvinceAdmin(object):
-    list_display = ['id', 'province']
-
-class CityAdmin(object):
-    list_display = ['id', 'city']
+class AreaAdmin(object):
+    list_display = ['id', 'city_name']
 
 
-xadmin.site.register(Province, ProvinceAdmin)
-xadmin.site.register(City, CityAdmin)
+xadmin.site.register(Area, AreaAdmin)
+

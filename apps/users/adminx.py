@@ -7,11 +7,15 @@
 
 import xadmin
 from xadmin import views
-from .models import Address
+from .models import Address, Message
 
 
 class AddressAdmin(object):
     list_display = ['id', 'user']
+
+
+class MessageAdimin(object):
+    list_display = ['id', 'title', 'type', 'user']
 
 
 class BaseSetting(object):
@@ -29,3 +33,4 @@ xadmin.site.register(views.BaseAdminView, BaseSetting)
 xadmin.site.register(views.CommAdminView, GlobalSettings)
 
 xadmin.site.register(Address, AddressAdmin)
+xadmin.site.register(Message, MessageAdimin)

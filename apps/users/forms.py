@@ -6,16 +6,18 @@
 # @Software: PyCharm
 
 from django import forms
-from .models import User
+from .models import User, Address
 import re
 
 
 def check_email(email):
+    '''验证邮箱的合法性'''
     pattern = re.compile(r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?")
     return re.match(pattern, email)
 
 
 def check_mobile(mobile):
+    '''验证手机号码的合法性'''
     pattern = re.compile(r'^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))\\d{8}$')
     return re.match(pattern, mobile)
 
@@ -91,6 +93,7 @@ class LoginForm(forms.Form):
     username = forms.CharField(label='用户名')
     password = forms.CharField(label='密码', widget=forms.PasswordInput)
     '''判断登录方式'''
+
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if check_email(username):
@@ -106,3 +109,36 @@ class LoginForm(forms.Form):
             if not filter_result:
                 raise forms.ValidationError('用户名不存在')
         return username
+
+
+class AddressForm(forms.Form):
+    '''处理收件人信息表单'''
+    prov = forms.CharField()
+    city = forms.CharField()
+    dis = forms.CharField()
+    receiver = forms.CharField()
+    email = forms.CharField(required=False)
+    place = forms.CharField()
+    zip_code = forms.CharField(required=False)
+    mobile = forms.CharField()
+    tel = forms.CharField(required=False)
+    landmark = forms.CharField(required=False)
+    best_send_time = forms.CharField(required=False)
+
+    def clean_receiver(self):
+        receiver = self.cleaned_data.get('receiver')
+        if len(receiver) < 3:
+            raise forms.ValidationError('请输入收件人')
+        return receiver
+
+    def clean_place(self):
+        place = self.cleaned_data.get('place')
+        if len(place) < 3:
+            raise forms.ValidationError('请填写具体地址')
+        return place
+
+    def clean_mobile(self):
+        mobile = self.cleaned_data.get('mobile')
+        if not check_mobile(mobile):
+            raise forms.ValidationError('请输入正确手机号')
+        return mobile

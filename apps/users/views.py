@@ -5,14 +5,16 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
-from .models import User
+from .models import User, Address
+from areas.models import Area
 from django.views.generic import View
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, AddressForm
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired
 from celery_task.tasks import send_mail_active
+from utils.mixin import LoginRequiredMixin
 
 
 class CustomBackend(ModelBackend):
@@ -110,7 +112,9 @@ class LoginView(View):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(username=username, password=password)  # 登录校验
-            if user is not None and user.is_active:
+            if user.is_active == 0:
+                return render(request, 'login.html', {'err': '请到邮箱激活账户'})
+            elif user is not None and user.is_active:
                 login(request, user)  # 登录并记住状态
                 response = redirect(reverse('good:index'))  # HttpResponseRedirect
                 remember = request.POST.get('remember')
@@ -133,3 +137,145 @@ class LogoutView(View):
     def get(self, request):
         logout(request)  # 清楚用户的session信息
         return redirect(reverse('good:index'))
+
+
+class UserInforView(LoginRequiredMixin, View):
+    '''用户信息'''
+
+    def get(self, request):
+        return render(request, 'member_user.html')
+
+
+class UserOrderView(LoginRequiredMixin, View):
+    '''订单'''
+
+    def get(self, request):
+        return render(request, 'member_order.html')
+
+
+class GetProv(View):
+    def get(self, request):
+        '''获取所有省级地区的信息'''
+        # 1.获取所有省级地区的信息
+        areas = Area.objects.filter(aParent__isnull=True)
+        # 2.遍历areas并拼接出json数据：atitle id
+        areas_list = []
+        for area in areas:
+            areas_list.append((area.id, area.atitle))
+
+        # 3.返回数据
+        return JsonResponse({'data': areas_list})
+
+
+class GetCity(View):
+    def get(self, request, pid):
+        '''获取pid的下级地区的信息'''
+        # 1.获取pid对应地区的下级地区
+        areas = Area.objects.filter(aParent__id=pid)
+        # 2.遍历areas并拼接出json数据：atitle id
+        areas_list = []
+        for area in areas:
+            areas_list.append((area.id, area.atitle))
+
+        # 3.返回数据
+        return JsonResponse({'data': areas_list})
+
+
+class UserAddressView(LoginRequiredMixin, View):
+    '''地址'''
+
+    def get(self, request):
+        user = request.user
+        # try:
+        #     # address = Address.objects.get_default_address(user_id=user.id)
+        #     address = Address.objects.get(user=user) # models.Manager
+        # except Address.DoesNotExist as e:
+        #     address = None
+        address = Address.objects.filter(user=user).order_by('id')
+        print(user)
+        print(address)
+        times = [choice[1] for choice in Address.TIME_CHOICES]  # 获取models里的TIME_CHOICES选项
+        content = {
+            'addresses': address,
+            'times': times,
+
+        }
+        return render(request, 'member_address.html', content)
+
+    def post(self, request):
+        form = AddressForm(request.POST)
+        user = request.user  # 获取当前用户
+        if form.is_valid():
+            prov = form.cleaned_data['prov']
+            city = form.cleaned_data['city']
+            dis = form.cleaned_data['dis']
+            receiver = form.cleaned_data['receiver']
+            email = form.cleaned_data['email']
+            place = form.cleaned_data['place']
+            zip_code = form.cleaned_data['zip_code']
+            mobile = form.cleaned_data['mobile']
+            tel = form.cleaned_data['tel']
+            landmark = form.cleaned_data['landmark']
+            best_send_time = form.cleaned_data['best_send_time']
+            address = Address.objects.filter(user=user)  # 获取当前用户地址
+            if address:
+                # 如果存在,　不设置为默认地址
+                is_default = False
+            else:
+                # 如果不存在,　设置为默认地址
+                is_default = True
+            # city_id: 110000
+            # district_id: 110101
+            # province_id: 110000
+            Address.objects.create(user_id=user, province_id=prov, city_id=city, district_id=dis, receiver=receiver,
+                                   email=email, place=place,
+                                   zip_code=zip_code, mobile=mobile, tel=tel, landmark=landmark,
+                                   best_send_time=best_send_time, is_default=is_default)
+            return redirect(reverse('user:address'))
+        else:
+            '''添加地址失败时, 地址栏仍然显示已有地址'''
+            address = Address.objects.filter(user=user).order_by('id')
+            print(user)
+            print(address)
+            times = [choice[1] for choice in Address.TIME_CHOICES]  # 获取models里的TIME_CHOICES选项
+            content = {
+                'addresses': address,
+                'times': times,
+                'form': form
+            }
+            return render(request, 'member_address.html', content)
+
+
+class UserCollectView(LoginRequiredMixin, View):
+    '''收藏'''
+
+    def get(self, request):
+        return render(request, 'member_collect.html')
+
+
+class UserMsgView(LoginRequiredMixin, View):
+    '''留言'''
+
+    def get(self, request):
+        return render(request, 'member_msg.html')
+
+
+class UserPacketView(LoginRequiredMixin, View):
+    '''红包'''
+
+    def get(self, request):
+        return render(request, 'member_packet.html')
+
+
+class UserSafeView(LoginRequiredMixin, View):
+    '''账户安全'''
+
+    def get(self, request):
+        return render(request, 'member_safe.html')
+
+
+class UserMoneyView(LoginRequiredMixin, View):
+    '''资金管理'''
+
+    def get(self, request):
+        return render(request, 'member_money.html')

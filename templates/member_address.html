@@ -1,0 +1,214 @@
+
+{% extends 'member_base.html' %}
+{% load staticfiles %}
+{% block js %}
+    <script type="text/javascript" src="{% static 'js/jquery-1.8.2.min.js' %}"></script>
+    <script>
+        $(function () {
+            $.get("prov", function (data) { // 注意prov的路径
+                res = data.data
+                prov = $('#prov')
+                $.each(res, function (index, item) {
+                    id = item[0]
+                    atitle = item[1]
+                    option_str = '<option value="'+id + '">'+ atitle+ '</option>'
+                    prov.append(option_str)
+                })
+            })
+
+
+            $('#prov').change(function () {
+                prov_id=$(this).val()
+                $.get('city'+prov_id, function (data) {
+                    res = data.data
+                    city = $('#city')
+                    city.empty().append('<option>---请选择市---</option>')
+                    dis = $('#dis')
+                    dis.empty().append('<option>---请选择县---</option>')
+                    $.each(res, function (index, item) {
+                        id = item[0]
+                        atitle = item[1]
+                        option_str = '<option value="'+id + '">'+ atitle+ '</option>'
+                        city.append(option_str)
+                    })
+                })
+            })
+            $('#city').change(function () {
+                city_id=$(this).val()
+                $.get('dis'+city_id, function (data) {
+                    res = data.data
+                    dis = $('#dis')
+                    dis.empty().append('<option>---请选择县---</option>')
+                    $.each(res, function (index, item) {
+                        id = item[0]
+                        atitle = item[1]
+                        option_str = '<option value="'+id + '">'+ atitle+ '</option>'
+                        dis.append(option_str)
+                    })
+                })
+            })
+        })
+    </script>
+{% endblock %}
+{% block right_content %}
+		<div class="m_right">
+            <p></p>
+            <div class="mem_tit">收货地址</div>
+			<div class="address">
+                <div class="a_close"><a href="#"><img src="{% static 'images/a_close.png' %}" /></a></div>
+            	 {% for address in addresses %}
+                <table border="0" class="add_t" align="center" style="width:98%; margin:10px auto;" cellspacing="0" cellpadding="0">
+                    {% if address.is_default %}
+                  <tr>
+                    <td colspan="2" style="font-size:14px; color:#ff4e00;">默认地址</td>
+                  </tr>
+
+                  <tr>
+                    <td align="right" width="80">收货人姓名：</td>
+                    <td>{{ address.receiver }}</td>
+                  </tr>
+                  <tr>
+                    <td align="right">配送区域：</td>
+                    <td>{{ address.province }}&nbsp;&nbsp;{{ address.city }}&nbsp;&nbsp;{{ address.district }}</td>
+                  </tr>
+                  <tr>
+                    <td align="right">详细地址：</td>
+                    <td>{{ address.place }}</td>
+                  </tr>
+                  <tr>
+                    <td align="right">手机：</td>
+                    <td>{{ address.mobile }}</td>
+                  </tr>
+                  <tr>
+                    <td align="right">电话：</td>
+                    <td>{{ address.tel }}</td>
+                  </tr>
+                  <tr>
+                    <td align="right">电子邮箱：</td>
+                    <td>{{ address.email }}</td>
+                  </tr>
+                  <tr>
+                    <td align="right">标志建筑：</td>
+                    <td>{{ address.landmark }}</td>
+                  </tr>
+
+                </table>
+				
+                <p align="right">
+                	<!--<a href="#" style="color:#ff4e00;">设为默认</a>&nbsp; &nbsp; &nbsp; &nbsp; -->
+                    <a href="#" style="color:#ff4e00;">编辑</a>&nbsp; &nbsp; &nbsp; &nbsp;
+                </p>
+                {% else %}
+                <tr>
+                    <td colspan="2" style="font-size:14px; color:#ff4e00;">其他地址</td>
+                  </tr>
+
+                  <tr>
+                    <td align="right" width="80">收货人姓名：</td>
+                    <td>{{ address.receiver }}</td>
+                  </tr>
+                  <tr>
+                    <td align="right">配送区域：</td>
+                    <td>{{ address.province }}&nbsp;&nbsp;{{ address.city }}&nbsp;&nbsp;{{ address.district }}</td>
+                  </tr>
+                  <tr>
+                    <td align="right">详细地址：</td>
+                    <td>{{ address.place }}</td>
+                  </tr>
+                  <tr>
+                    <td align="right">手机：</td>
+                    <td>{{ address.mobile }}</td>
+                  </tr>
+                  <tr>
+                    <td align="right">电话：</td>
+                    <td>{{ address.tel }}</td>
+                  </tr>
+                  <tr>
+                    <td align="right">电子邮箱：</td>
+                    <td>{{ address.email }}</td>
+                  </tr>
+                  <tr>
+                    <td align="right">标志建筑：</td>
+                    <td>{{ address.landmark }}</td>
+                  </tr>
+
+                </table>
+
+                <p align="right">
+                	<a href="#" style="color:#ff4e00;">设为默认</a>&nbsp; &nbsp; &nbsp; &nbsp; <a href="#" style="color:#ff4e00;">编辑</a>&nbsp; &nbsp; &nbsp; &nbsp;
+                </p>
+                {% endif %}
+            {% endfor %}
+
+            </div>
+
+            <div class="mem_tit">
+            	<a href="#"><img src="{% static 'images/add_ad.gif' %}" /></a>
+            </div>
+        <form method="post">
+            <table border="0" class="add_tab" style="width:930px;"  cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="135" align="right">配送地区</td>
+                <td colspan="3" style="font-family:'宋体';">
+                	<select class='area' id="prov" name="prov">
+                    <option>请选择省</option>
+                    </select>
+                    <span>{{ address.prov.errors }}</span>
+                    <select class="area" id="city" name="city">
+                      <option>请选择市</option>
+                    </select>
+                    <select class="area" id="dis" name="dis">
+                      <option>请选择县</option>
+                    </select>
+                    （必填）
+                </td>
+              </tr>
+              <tr>
+                <td align="right">收货人姓名</td>
+                <td style="font-family:'宋体';"><input type="text" placeholder="姓名" class="add_ipt" name="receiver" />（必填）<span style="color: red">{{ form.receiver.errors }}</span></td>
+                <td align="right">电子邮箱</td>
+                <td style="font-family:'宋体';"><input type="text" placeholder="12345678@qq.com" class="add_ipt" name="email"/></td>
+              </tr>
+              <tr>
+                <td align="right">详细地址</td>
+                <td style="font-family:'宋体';"><input type="text" placeholder="世外桃源" class="add_ipt" name="place" />（必填）<span style="color: red">{{ form.place.errors }}</span></td>
+                <td align="right">邮政编码</td>
+                <td style="font-family:'宋体';"><input type="text" placeholder="610000" class="add_ipt" name="zip_code" /></td>
+              </tr>
+              <tr>
+                <td align="right">手机</td>
+                <td style="font-family:'宋体';"><input type="text" placeholder="1361234587" class="add_ipt" name="mobile"/>（必填）<span style="color: red">{{ form.mobile.errors }}</span>
+                </td>
+                <td align="right">电话</td>
+                <td style="font-family:'宋体';"><input type="text" placeholder="028-12345678" class="add_ipt" name="tel"/></td>
+              </tr>
+              <tr>
+                <td align="right">标志建筑</td>
+                <td style="font-family:'宋体';"><input type="text" placeholder="世外桃源大酒店" class="add_ipt" name="landmark" /></td>
+                <td align="right">最佳送货时间</td>
+
+{#                <td style="font-family:'宋体';"><input type="text" placeholder="" class="add_ipt" name="best_send_time" />{{ time.get_best_send_time_display }}</td>#}
+                <td style="font-family:'宋体';">
+                  <select class="area" name="best_send_time">
+                     {% for time in times %}
+                        <option>{{time}}</option>
+                     {% endfor %}<select>
+
+                </select> </td>
+
+
+              </tr>
+            </table>
+           	<p align="right">
+{#            	<a href="#">删除</a>&nbsp; &nbsp; <a href="#" class="add_b">确认</a>#}
+            	<input type="submit" value="确认添加" class="add_b"/>
+            </p>
+        {% csrf_token %}
+            </form>
+
+
+        </div>
+    </div>
+	<!--End 用户中心 End-->
+
+{% endblock %}
