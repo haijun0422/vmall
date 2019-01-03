@@ -35,14 +35,20 @@ class OrderInfo(BaseModel):
         (6, "已取消"),
     )
 
+    OPER_SELECT = (
+        (1, '取消订单'),
+        (2, '去支付'),
+        (3, '确认收货'),
+    )
     order_id = models.CharField(max_length=64, primary_key=True, verbose_name="订单号")
     user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="下单用户")
-    address = models.ForeignKey(Address, on_delete=models.PROTECT, verbose_name="收获地址")
+    address = models.ForeignKey(Address, on_delete=models.PROTECT, verbose_name="收货地址")
     total_count = models.IntegerField(default=1, verbose_name="商品总数")
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="商品总金额")
     freight = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="运费")
     pay_method = models.SmallIntegerField(choices=PAY_METHOD_CHOICES, default=1, verbose_name="支付方式")
     status = models.SmallIntegerField(choices=ORDER_STATUS_CHOICES, default=1, verbose_name="订单状态")
+    operational = models.SmallIntegerField(choices=OPER_SELECT, verbose_name='买家操作', default=2)
 
     class Meta:
         db_table = "tb_order_info"

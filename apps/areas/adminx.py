@@ -10,7 +10,7 @@ import xadmin
 
 
 class AreaAdmin(object):
-    list_display = ['id', 'city_name']
+    list_display = ['id', 'atitle']
 
 
 xadmin.site.register(Area, AreaAdmin)

@@ -8,6 +8,7 @@ from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 
 from .models import User, Address
+from orders.models import OrderInfo
 from areas.models import Area
 from django.views.generic import View
 from .forms import RegisterForm, LoginForm, AddressForm
@@ -143,14 +144,35 @@ class UserInforView(LoginRequiredMixin, View):
     '''用户信息'''
 
     def get(self, request):
-        return render(request, 'member_user.html')
+        user = request.user
+        '''积分控制会员等级'''
+        num = 0
+        if user.integral >= 1000:
+            user.identity = 4
+        elif 1000>user.integral >= 500:
+            num = 1000-user.integral
+            user.identity = 3
+        elif 500>user.integral >= 200:
+            num = 500 - user.integral
+            user.identity = 2
+        else:
+            num = 200 - user.integral
+            user.identity = 1
+        user.save()
+
+        return render(request, 'member_user.html', {'user': user, 'num': num})
 
 
 class UserOrderView(LoginRequiredMixin, View):
     '''订单'''
 
     def get(self, request):
-        return render(request, 'member_order.html')
+        user = request.user
+        orders = OrderInfo.objects.filter(user=user)
+        content = {
+            'orders': orders
+        }
+        return render(request, 'member_order.html',content)
 
 
 class GetProv(View):
@@ -186,11 +208,6 @@ class UserAddressView(LoginRequiredMixin, View):
 
     def get(self, request):
         user = request.user
-        # try:
-        #     # address = Address.objects.get_default_address(user_id=user.id)
-        #     address = Address.objects.get(user=user) # models.Manager
-        # except Address.DoesNotExist as e:
-        #     address = None
         address = Address.objects.filter(user=user).order_by('id')
         print(user)
         print(address)
@@ -227,7 +244,7 @@ class UserAddressView(LoginRequiredMixin, View):
             # city_id: 110000
             # district_id: 110101
             # province_id: 110000
-            Address.objects.create(user_id=user, province_id=prov, city_id=city, district_id=dis, receiver=receiver,
+            Address.objects.create(user=user, province_id=prov, city_id=city, district_id=dis, receiver=receiver,
                                    email=email, place=place,
                                    zip_code=zip_code, mobile=mobile, tel=tel, landmark=landmark,
                                    best_send_time=best_send_time, is_default=is_default)

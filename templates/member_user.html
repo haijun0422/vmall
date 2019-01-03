@@ -7,12 +7,12 @@
                   <tr valign="top">
                     <td width="115"><img src="{% static 'images/user.jpg' %}" width="90" height="90" /></td>
                     <td>
-                    	<div class="m_user">TRACY</div>
+                    	<div class="m_user">{{ user.username }}</div>
                         <p>
-                            等级：注册用户 <br />
-                            <font color="#ff4e00">您还差 270 积分达到 分红100</font><br />
-                            上一次登录时间: 2015-09-28 18:19:47<br />
-                            您还没有通过邮件认证 <a href="#" style="color:#ff4e00;">点此发送认证邮件</a>
+                            等级：{{ user.get_identity_display }} <br />
+                            <font color="#ff4e00">您离下一级会员还差 {{ num }} 积分</font><br />
+                            上一次登录时间: {{ user.last_login }}<br />
+{#                            您还没有通过邮件认证 <a href="#" style="color:#ff4e00;">点此发送认证邮件</a>#}
                         </p>
                         <div class="m_notice">
                         	用户中心公告！
@@ -25,7 +25,7 @@
             <div class="mem_t">资产信息</div>
             <table border="0" class="mon_tab" style="width:870px; margin-bottom:20px;" cellspacing="0" cellpadding="0">
               <tr>
-                <td width="33%">用户等级：<span style="color:#555555;">普通会员</span></td>
+                <td width="33%">用户等级：<span style="color:#555555;">{{ user.get_identity_display }}</span></td>
                 <td width="33%">消费金额：<span>￥200元</span></td>
                 <td width="33%">返还积分：<span>99R</span></td>
               </tr>
@@ -44,16 +44,16 @@
             <div class="mem_t">账号信息</div>
             <table border="0" class="mon_tab" style="width:870px; margin-bottom:20px;" cellspacing="0" cellpadding="0">
               <tr>
-                <td width="40%">用户ID：<span style="color:#555555;">12345678</span></td>
+                <td width="40%">用户ID：<span style="color:#555555;">{{ user.id }}</span></td>
                 <td width="60%">邀请人：<span style="color:#555555;">邀请人姓名</span></td>
               </tr>
               <tr>
-                <td>电&nbsp; &nbsp; 话：<span style="color:#555555;">1861111111</span></td>
-                <td>邮&nbsp; &nbsp; 箱：<span style="color:#555555;">12345678@qq.com</span></td>
+                <td>电&nbsp; &nbsp; 话：<span style="color:#555555;">{{ user.mobile }}</span></td>
+                <td>邮&nbsp; &nbsp; 箱：<span style="color:#555555;">{{ user.emile }}</span></td>
               </tr>
               <tr>
-                <td>身份证号：<span style="color:#555555;">522555123456789</span></td>
-                <td>注册时间：<span style="color:#555555;">2015-10-10</span></td>
+{#                <td>身份证号：<span style="color:#555555;">522555123456789</span></td>#}
+                <td>注册时间：<span style="color:#555555;">{{ user.date_joined }}</span></td>
               </tr>
             </table>
                
