@@ -8,7 +8,8 @@
 from django.conf.urls import url
 from .views import IndexView
 
-
 urlpatterns = [
     url(r'', IndexView.as_view(), name='index'),
+    # url(r'', CategoryListView.as_view(), name='category_list'),
+    # url(r'^category/(?P<slug>[-\w]+)/$', CategoryDetailView.as_view(), name='category_detail'),
 ]

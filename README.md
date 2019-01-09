@@ -27,6 +27,10 @@
 - 安装nginx及fastdfs-nginx-module
 - nginx.conf 配置
 
-###
+### 用户中心
 - 用户中心－地址页
     - 待完善编辑,删除
+
+### 首页
+- 首页分类展示，使用django-mptt
+    

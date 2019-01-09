@@ -6,7 +6,7 @@
 # @Software: PyCharm
 
 import xadmin
-from .models import GoodsCategory1, GoodsCategory2, GoodsCategory3, GoodsChannel, Brand, Goods, GoodsSpecification, SpecificationOption, SKU, SKUImage, \
+from .models import GoodsCategory, GoodsChannel, Brand, Goods, GoodsSpecification, SpecificationOption, SKU, SKUImage, \
     SKUSpecification
 
 
@@ -15,15 +15,7 @@ class SKUAdmin(object):
                     'is_launched']
 
 
-class GoodsCategoryAdmin1(object):
-    list_display = ['id', 'name']
-
-
-class GoodsCategoryAdmin2(object):
-    list_display = ['id', 'name']
-
-
-class GoodsCategoryAdmin3(object):
+class GoodsCategoryAdmin(object):
     list_display = ['id', 'name']
 
 
@@ -55,9 +47,7 @@ class SKUSpecificationAdmin(object):
     list_display = ['id', 'sku', 'spec', 'option']
 
 
-xadmin.site.register(GoodsCategory1, GoodsCategoryAdmin1)
-xadmin.site.register(GoodsCategory2, GoodsCategoryAdmin2)
-xadmin.site.register(GoodsCategory3, GoodsCategoryAdmin3)
+xadmin.site.register(GoodsCategory, GoodsCategoryAdmin)
 xadmin.site.register(GoodsChannel, GoodsChannelAdmin)
 xadmin.site.register(Brand, BrandAdmin)
 xadmin.site.register(Goods, GoodsAdmin)

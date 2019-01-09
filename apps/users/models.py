@@ -7,8 +7,7 @@ from utils.db_models import BaseModel
 
 
 class User(AbstractUser):
-
-    INDENTITY_SELECT=(
+    INDENTITY_SELECT = (
         (1, '普通会员'),
         (2, '白银会员'),
         (3, '黄金会员'),
@@ -16,8 +15,8 @@ class User(AbstractUser):
     )
     mobile = models.CharField(max_length=11, unique=True, verbose_name='手机')
     email_activate = models.BooleanField(default=False, verbose_name='邮箱验证状态')
-    default_address = models.ForeignKey('Address', related_name='users', null=True, blank=True,
-                                        on_delete=models.SET_NULL, verbose_name='默认地址')
+    default_address = models.ForeignKey('Address', related_name='users', blank=True, null=True,
+                                        on_delete=models.CASCADE, verbose_name='默认地址')
     identity = models.SmallIntegerField(choices=INDENTITY_SELECT, default=1,
                                         verbose_name='会员等级')
     integral = models.IntegerField(verbose_name='积分', default=0)

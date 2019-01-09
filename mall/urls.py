@@ -22,6 +22,6 @@ import xadmin
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
-    url(r'user/', include('users.urls', namespace='user')),  # 用户模块
-    url(r'^$', include('goods.urls', namespace='good')),  # 主页
+    url(r'user/', include(('users.urls','user'), namespace='user')),  # 用户模块
+    url(r'^$', include(('goods.urls','good'), namespace='good')),  # 主页
 ]

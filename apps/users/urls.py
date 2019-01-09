@@ -13,7 +13,7 @@ from users.views import RegisterView, LoginView, ActiveEmail, LogoutView, UserIn
 urlpatterns = [
     url(r'^register', RegisterView.as_view(), name='register'),
     url(r'^login', LoginView.as_view(), name='login'),
-    url(r'^active/(?P<token>.*)$', ActiveEmail.as_view(), name='active'),
+    url(r'^active/(?P<token>.*)$', ActiveEmail.as_view(), name='active'),  # 邮箱激活
     url(r'^logout', LogoutView.as_view(), name='logout'),
     url(r'^member', UserInforView.as_view(), name='member'),
     url(r'^order', UserOrderView.as_view(), name='order'),

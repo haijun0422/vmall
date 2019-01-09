@@ -1,6 +1,7 @@
 # encoding:utf-8
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
+# from django.urls import reverse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q

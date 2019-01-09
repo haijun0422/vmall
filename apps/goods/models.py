@@ -6,47 +6,18 @@ from django.db import models
 from utils.db_models import BaseModel
 
 
-class GoodsCategory1(BaseModel):
+class GoodsCategory(models.Model):
     """
     商品类别
     """
     name = models.CharField(max_length=10, verbose_name='名称')
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='children', verbose_name='父类别')
+    is_parent = models.BooleanField(default=0, verbose_name='是否为父类')
+    sort = models.IntegerField(default=0, verbose_name='排序')
 
     class Meta:
-        db_table = 'tb_goods_category1'
-        verbose_name = '一级类目'
-        verbose_name_plural = verbose_name
-
-    def __str__(self):
-        return self.name
-
-
-class GoodsCategory2(BaseModel):
-    """
-    商品类别
-    """
-    name = models.CharField(max_length=10, verbose_name='名称')
-    parent = models.ForeignKey(GoodsCategory1, null=True, blank=True, on_delete=models.CASCADE, verbose_name='父类目')
-
-    class Meta:
-        db_table = 'tb_goods_category2'
-        verbose_name = '二级类目'
-        verbose_name_plural = verbose_name
-
-    def __str__(self):
-        return self.name
-
-
-class GoodsCategory3(BaseModel):
-    """
-    商品类别
-    """
-    name = models.CharField(max_length=10, verbose_name='名称')
-    parent = models.ForeignKey(GoodsCategory2, null=True, blank=True, on_delete=models.CASCADE, verbose_name='父类目')
-
-    class Meta:
-        db_table = 'tb_goods_category3'
-        verbose_name = '三级类目'
+        db_table = 'tb_goods_category'
+        verbose_name = '商品类别'
         verbose_name_plural = verbose_name
 
     def __str__(self):
@@ -58,7 +29,7 @@ class GoodsChannel(BaseModel):
     商品频道
     """
     group_id = models.IntegerField(verbose_name='组号')
-    category = models.ForeignKey(GoodsCategory1, on_delete=models.CASCADE, verbose_name='顶级商品类别')
+    category = models.ForeignKey(GoodsCategory, on_delete=models.CASCADE, verbose_name='顶级商品类别')
     url = models.CharField(max_length=50, verbose_name='频道页面链接')
     index = models.IntegerField(verbose_name='组内顺序')
 
@@ -94,11 +65,11 @@ class Goods(BaseModel):
     """
     name = models.CharField(max_length=50, verbose_name='名称')
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, verbose_name='品牌')
-    category1 = models.ForeignKey(GoodsCategory1, on_delete=models.PROTECT, related_name='cat1_goods',
+    category1 = models.ForeignKey(GoodsCategory, on_delete=models.PROTECT, related_name='cat1_goods',
                                   verbose_name='一级类别')
-    category2 = models.ForeignKey(GoodsCategory2, on_delete=models.PROTECT, related_name='cat2_goods',
+    category2 = models.ForeignKey(GoodsCategory, on_delete=models.PROTECT, related_name='cat2_goods',
                                   verbose_name='二级类别')
-    category3 = models.ForeignKey(GoodsCategory3, on_delete=models.PROTECT, related_name='cat3_goods',
+    category3 = models.ForeignKey(GoodsCategory, on_delete=models.PROTECT, related_name='cat3_goods',
                                   verbose_name='三级类别')
     sales = models.IntegerField(default=0, verbose_name='销量')
     comments = models.IntegerField(default=0, verbose_name='评价数')
@@ -155,7 +126,7 @@ class SKU(BaseModel):
     name = models.CharField(max_length=50, verbose_name='名称')
     caption = models.CharField(max_length=100, verbose_name='副标题')
     goods = models.ForeignKey(Goods, on_delete=models.CASCADE, verbose_name='商品')
-    category = models.ForeignKey(GoodsCategory3, on_delete=models.PROTECT, verbose_name='从属类别')
+    category = models.ForeignKey(GoodsCategory, on_delete=models.PROTECT, verbose_name='从属类别')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='单价')
     cost_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='进价')
     market_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='市场价')
